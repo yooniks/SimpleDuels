@@ -1,0 +1,12 @@
+items:
+  armor:
+    head: #slot, correct types: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/EquipmentSlot.html
+      material: DIAMOND_HELMET
+  inventory:
+    1: #slot
+      material: DIAMOND_SWORD
+duel:
+  time-to-start: 10
+  counting-message: "&6[Duel] &7Time to start: &6{SECONDS} seconds&7!"
+  start-message: "&6[Duel] &7Your fight has just started!"
+  cancelled-error-message: "&6[Duel] &cYour fight has been cancelled because something went wrong! (Your opponent has left?)"

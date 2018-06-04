@@ -1,0 +1,6 @@
+name: 'SimpleDuels'
+version: ${project.version}
+main: 'xyz.yooniks.duels.DuelsPlugin'
+authors: [yooniks]
+description: 'Simple plugin for duels between players!'
+website: 'www.youtube.com/c/Enchanted3'
