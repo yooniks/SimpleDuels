@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import xyz.yooniks.duels.config.DuelSettings;
 import xyz.yooniks.duels.user.UserManager;
 import xyz.yooniks.duels.util.ItemUtil;
 
@@ -25,6 +26,8 @@ public final class DuelsPlugin extends JavaPlugin {
   public void onEnable() {
     this.saveDefaultConfig();
     this.loadItems();
+
+    DuelSettings.load(this);
   }
 
   @Override
