@@ -14,7 +14,6 @@ public final class ItemUtil {
   }
 
   public static ItemStack fromSection(ConfigurationSection section) {
-    final int slot = StringUtils.isNumeric(section.getName()) ? Integer.parseInt(section.getName()) : 1;
     final ItemStack item = new ItemStack(Material.GRASS);
     final ItemMeta im = item.getItemMeta();
 

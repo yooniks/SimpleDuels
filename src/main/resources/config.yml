@@ -10,3 +10,16 @@ duel:
   counting-message: "&6[Duel] &7Time to start: &6{SECONDS} seconds&7!"
   start-message: "&6[Duel] &7Your fight has just started!"
   cancelled-error-message: "&6[Duel] &cYour fight has been cancelled because something went wrong! (Your opponent has left?)"
+  start-locations:
+    a:
+      x: 0
+      y: 80
+      z: 0
+      yaw: 1.0
+      pitch: 2.0
+    b:
+      x: 5
+      y: 80
+      z: 0
+      yaw: 1.0
+      pitch: 2.0

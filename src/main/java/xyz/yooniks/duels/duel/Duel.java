@@ -2,22 +2,30 @@ package xyz.yooniks.duels.duel;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import xyz.yooniks.duels.DuelsPlugin;
 import xyz.yooniks.duels.config.DuelSettings;
 import xyz.yooniks.duels.user.User;
+import xyz.yooniks.duels.user.UserManager;
 
 public class Duel {
 
   private final Player playerA, playerB;
-  private final DuelsPlugin plugin;
+  private final UserManager userManager;
 
-  public Duel(DuelsPlugin plugin, Player playerA, Player playerB) {
-    this.plugin = plugin;
+  public Duel(UserManager userManager, Player playerA, Player playerB) {
+    this.userManager = userManager;
     this.playerA = playerA;
     this.playerB = playerB;
+
+    this.start();
   }
 
   public void start() {
+    final User userA = this.userManager.getOrCreateUser(this.playerA);
+    final User userB = this.userManager.getOrCreateUser(this.playerB);
+
+    userA.sendMessage(DuelSettings.MESSAGE$CHAT$STARTED);
+    userB.sendMessage(DuelSettings.MESSAGE$CHAT$STARTED);
+    //...
   }
 
   public void end() {
@@ -26,9 +34,14 @@ public class Duel {
 
   public void cancel() {
     if (this.playerA.isOnline()) {
-      final User userA = this.plugin.getUserManager().getOrCreateUser(this.playerA);
+      final User userA = this.userManager.getOrCreateUser(this.playerA);
       userA.heal();
-      this.playerA.teleport(DuelSettings.DUEL$LOCATION, TeleportCause.PLUGIN);
+      this.playerA.teleport(DuelSettings.DUEL$LOCATION_A, TeleportCause.PLUGIN);
+    }
+    else if (this.playerB.isOnline()) {
+      final User userB = this.userManager.getOrCreateUser(this.playerB);
+      userB.heal();
+      this.playerB.teleport(DuelSettings.DUEL$LOCATION_B, TeleportCause.PLUGIN);
     }
   }
 

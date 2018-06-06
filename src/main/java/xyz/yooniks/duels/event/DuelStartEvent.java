@@ -6,7 +6,7 @@ import org.bukkit.event.HandlerList;
 
 public class DuelStartEvent extends Event {
 
-  private final HandlerList handlers = new HandlerList();
+  private static final HandlerList handlers = new HandlerList();
 
   private final Player playerA, playerB;
 
@@ -15,8 +15,20 @@ public class DuelStartEvent extends Event {
     this.playerB = playerB;
   }
 
-  @Override
+  public Player getPlayerA() {
+    return playerA;
+  }
+
+  public Player getPlayerB() {
+    return playerB;
+  }
+
   public HandlerList getHandlers() {
     return handlers;
   }
+
+  public static HandlerList getHandlerList() {
+    return DuelStartEvent.handlers;
+  }
+
 }
