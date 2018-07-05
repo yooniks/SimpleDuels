@@ -6,20 +6,18 @@ import xyz.yooniks.duels.user.UserManager;
 
 public final class DuelsPlugin extends JavaPlugin {
 
-  private final UserManager userManager;
-  private final ItemsManager itemsManager;
-
-  public DuelsPlugin() {
-    this.userManager = new UserManager();
-    this.itemsManager = new ItemsManager();
-  }
+  private UserManager userManager;
+  private ItemFactory itemFactory;
 
   @Override
   public void onEnable() {
-    this.saveDefaultConfig();
-    this.itemsManager.setupWith(this);
+    this.userManager = new UserManager();
+    this.itemFactory = new ItemFactory(this);
 
-    DuelSettings.load(this);
+    this.saveDefaultConfig();
+    this.itemFactory.load();
+
+    DuelSettings.setupWith(this);
   }
 
   @Override
@@ -30,8 +28,8 @@ public final class DuelsPlugin extends JavaPlugin {
     return userManager;
   }
 
-  public ItemsManager getItemsManager() {
-    return itemsManager;
+  public ItemFactory getItemFactory() {
+    return itemFactory;
   }
 
 }

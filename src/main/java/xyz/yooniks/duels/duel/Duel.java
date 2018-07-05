@@ -1,30 +1,37 @@
 package xyz.yooniks.duels.duel;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import xyz.yooniks.duels.config.DuelSettings;
+import xyz.yooniks.duels.event.DuelStartEvent;
 import xyz.yooniks.duels.user.DuelUser;
 import xyz.yooniks.duels.user.UserManager;
 
 public class Duel {
 
-  private final Player playerA, playerB;
+  private final DuelUser victim, opponent;
   private final UserManager userManager;
 
-  public Duel(UserManager userManager, Player playerA, Player playerB) {
-    this.userManager = userManager;
-    this.playerA = playerA;
-    this.playerB = playerB;
+  private final Location startLocation;
 
-    this.start();
+  public Duel(UserManager userManager, DuelUser victim, DuelUser opponent, Location startLocation) {
+    this.userManager = userManager;
+    this.victim = victim;
+    this.opponent = opponent;
+
+    this.startLocation = startLocation;
   }
 
   public void start() {
-    final DuelUser userA = this.userManager.getOrCreateUser(this.playerA);
-    final DuelUser userB = this.userManager.getOrCreateUser(this.playerB);
-
-    userA.sendMessage(DuelSettings.MESSAGE$CHAT$STARTED);
-    userB.sendMessage(DuelSettings.MESSAGE$CHAT$STARTED);
+    if (!this.victim.getBukkitPlayer().isPresent() || !this.opponent.getBukkitPlayer()
+        .isPresent()) {
+      this.end();
+      return;
+    }
+    Bukkit.getPluginManager().callEvent(new DuelStartEvent(this.victim.getBukkitPlayer().get(),
+        this.opponent.getBukkitPlayer().get()));
+    this.victim.sendMessage(DuelSettings.MESSAGE$CHAT$STARTED);
+    this.opponent.sendMessage(DuelSettings.MESSAGE$CHAT$STARTED);
     //...
   }
 
@@ -33,16 +40,24 @@ public class Duel {
   }
 
   public void cancel() {
-    if (this.playerA.isOnline()) {
-      final DuelUser userA = this.userManager.getOrCreateUser(this.playerA);
-      userA.heal();
-      this.playerA.teleport(DuelSettings.DUEL$LOCATION_A, TeleportCause.PLUGIN);
-    }
-    else if (this.playerB.isOnline()) {
-      final DuelUser userB = this.userManager.getOrCreateUser(this.playerB);
-      userB.heal();
-      this.playerB.teleport(DuelSettings.DUEL$LOCATION_B, TeleportCause.PLUGIN);
-    }
+    this.victim.getBukkitPlayer().ifPresent(playerB -> {
+      this.victim.heal();
+    });
+    this.opponent.getBukkitPlayer().ifPresent(playerB -> {
+      this.opponent.heal();
+    });
+  }
+
+  public DuelUser getOpponent() {
+    return this.opponent;
+  }
+
+  public DuelUser getVictim() {
+    return this.victim;
+  }
+
+  public Location getStartLocation() {
+    return this.startLocation;
   }
 
 }

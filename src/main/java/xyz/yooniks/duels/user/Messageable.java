@@ -1,9 +1,7 @@
 package xyz.yooniks.duels.user;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public interface Messageable {
 
@@ -12,8 +10,8 @@ public interface Messageable {
   }
 
   default void sendMessage(DuelUser user, String text) {
-    final Player player = Bukkit.getPlayer(user.getUniqueId());
-    player.sendMessage(ChatColor.translateAlternateColorCodes('&', text));
+    user.getBukkitPlayer().ifPresent(player ->
+        player.sendMessage(ChatColor.translateAlternateColorCodes('&', text)));
   }
 
 }

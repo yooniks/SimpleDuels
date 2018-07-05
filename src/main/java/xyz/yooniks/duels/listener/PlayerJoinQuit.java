@@ -1,31 +1,38 @@
 package xyz.yooniks.duels.listener;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import xyz.yooniks.duels.DuelsPlugin;
+import xyz.yooniks.duels.ItemFactory;
+import xyz.yooniks.duels.duel.Duel;
 import xyz.yooniks.duels.user.DuelUser;
+import xyz.yooniks.duels.user.UserManager;
 
 public class PlayerJoinQuit implements Listener {
 
-  private final DuelsPlugin plugin; //i'm gonna use more its functions later
+  private final UserManager userManager;
+  private final ItemFactory itemFactory;
 
-  public PlayerJoinQuit(DuelsPlugin plugin) {
-    this.plugin = plugin;
+  public PlayerJoinQuit(UserManager userManager, ItemFactory itemFactory) {
+    this.userManager = userManager;
+    this.itemFactory = itemFactory;
   }
 
   @EventHandler
   public void onJoin(PlayerJoinEvent event) {
-    final DuelUser user = this.plugin.getUserManager().getOrCreateUser(event.getPlayer());
+    final Player player = event.getPlayer();
+    final DuelUser user = this.userManager.getOrCreateUser(player);
+
     user.heal();
-    user.addDuelItems(this.plugin.getItemsManager());
+    this.itemFactory.addItems(player);
   }
 
   @EventHandler
   public void onQuit(PlayerQuitEvent event) {
-    //TODO: checking if player is during fight etc.
-
+    final DuelUser user = this.userManager.getOrCreateUser(event.getPlayer());
+    user.getDuel().ifPresent(Duel::end);
   }
 
 }

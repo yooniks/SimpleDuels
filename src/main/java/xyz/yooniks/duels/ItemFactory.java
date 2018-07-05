@@ -8,13 +8,19 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 import xyz.yooniks.duels.util.ItemUtil;
 
-public class ItemsManager {
+public class ItemFactory {
 
   private final Map<Integer, ItemStack> itemsInventory = new HashMap<>();
   private final Map<EquipmentSlot, ItemStack> itemsArmor = new HashMap<>();
+
+  private final Plugin plugin;
+
+  public ItemFactory(Plugin plugin) {
+    this.plugin = plugin;
+  }
 
   public void addItems(Player player) {
 
@@ -40,9 +46,9 @@ public class ItemsManager {
 
   }
 
-  public void setupWith(JavaPlugin plugin) {
-    final FileConfiguration config = plugin.getConfig();
-    final Logger logger = plugin.getLogger();
+  public void load() {
+    final FileConfiguration config = this.plugin.getConfig();
+    final Logger logger = this.plugin.getLogger();
 
     for (String itemType : config.getConfigurationSection("items").getKeys(false)) {
 

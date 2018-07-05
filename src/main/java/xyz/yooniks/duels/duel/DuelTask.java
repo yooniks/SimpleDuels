@@ -3,10 +3,9 @@ package xyz.yooniks.duels.duel;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.scheduler.BukkitRunnable;
 import xyz.yooniks.duels.DuelsPlugin;
-import xyz.yooniks.duels.ItemsManager;
+import xyz.yooniks.duels.ItemFactory;
 import xyz.yooniks.duels.config.DuelSettings;
 import xyz.yooniks.duels.user.DuelUser;
 import xyz.yooniks.duels.user.UserManager;
@@ -16,7 +15,7 @@ public class DuelTask extends BukkitRunnable {
   private final Player playerA, playerB;
 
   private final UserManager userManager;
-  private final ItemsManager itemsManager;
+  private final ItemFactory itemFactory;
 
   private int count = DuelSettings.DUEL$TIME_TO_START;
 
@@ -24,7 +23,7 @@ public class DuelTask extends BukkitRunnable {
     Validate.notNull(plugin, "Plugin cannot be null!");
 
     this.userManager = plugin.getUserManager();
-    this.itemsManager = plugin.getItemsManager();
+    this.itemFactory = plugin.getItemFactory();
 
     this.playerA = playerA;
     this.playerB = playerB;
@@ -51,9 +50,11 @@ public class DuelTask extends BukkitRunnable {
       final DuelUser userA = this.userManager.getOrCreateUser(this.playerA);
       final DuelUser userB = this.userManager.getOrCreateUser(this.playerB);
 
-      final Duel duel = new Duel(this.userManager, this.playerA, this.playerB);
+      final Duel duel = new Duel(this.userManager, userA, userB, this.playerA.getLocation());
       userA.setDuel(duel);
       userB.setDuel(duel);
+
+      duel.start();
 
       this.cancel();
       return;
@@ -78,14 +79,9 @@ public class DuelTask extends BukkitRunnable {
   }
 
   private void prepare() {
-    this.playerA.teleport(DuelSettings.DUEL$LOCATION_A, TeleportCause.PLUGIN);
-    this.playerB.teleport(DuelSettings.DUEL$LOCATION_B, TeleportCause.PLUGIN);
 
     final DuelUser userA = this.userManager.getOrCreateUser(this.playerA);
     final DuelUser userB = this.userManager.getOrCreateUser(this.playerB);
-
-    userA.addDuelItems(this.itemsManager);
-    userB.addDuelItems(this.itemsManager);
 
     userA.heal();
     userB.heal();
