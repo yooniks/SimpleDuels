@@ -13,7 +13,7 @@ public class DuelSettings {
   public static String MESSAGE$CHAT$DUEL_CANCELLED_ERROR;
   public static String MESSAGE$CHAT$STARTED;
 
-  public static void setupWith(DuelsPlugin plugin) {
+  public static void init(DuelsPlugin plugin) {
     final FileConfiguration cf = plugin.getConfig();
 
     DuelSettings.DUEL$TIME_TO_START = cf.getInt("duel.time-to-start");

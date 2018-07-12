@@ -16,6 +16,8 @@ public class ItemFactory {
   private final Map<Integer, ItemStack> itemsInventory = new HashMap<>();
   private final Map<EquipmentSlot, ItemStack> itemsArmor = new HashMap<>();
 
+  private final ItemEquiper itemEquiper = new ItemEquiper();
+
   private final Plugin plugin;
 
   public ItemFactory(Plugin plugin) {
@@ -23,30 +25,20 @@ public class ItemFactory {
   }
 
   public void addItems(Player player) {
-
     player.getInventory().clear();
     player.getInventory().setArmorContents(null);
 
+    //maybe foreach?
     for (Map.Entry<Integer, ItemStack> entry : this.itemsInventory.entrySet()) {
       player.getInventory().setItem(entry.getKey(), entry.getValue());
     }
 
     for (Map.Entry<EquipmentSlot, ItemStack> entry : this.itemsArmor.entrySet()) {
-      final EquipmentSlot slot = entry.getKey();
-      if (slot == EquipmentSlot.HEAD) {
-        player.getInventory().setHelmet(entry.getValue());
-      } else if (slot == EquipmentSlot.CHEST) {
-        player.getInventory().setChestplate(entry.getValue());
-      } else if (slot == EquipmentSlot.LEGS) {
-        player.getInventory().setLeggings(entry.getValue());
-      } else if (slot == EquipmentSlot.FEET) {
-        player.getInventory().setBoots(entry.getValue());
-      }
+      this.itemEquiper.equip(player, entry.getKey(), entry.getValue());
     }
-
   }
 
-  public void load() {
+  void init() {
     final FileConfiguration config = this.plugin.getConfig();
     final Logger logger = this.plugin.getLogger();
 
@@ -87,6 +79,31 @@ public class ItemFactory {
           }
 
           this.itemsArmor.put(slot, ItemUtil.fromSection(section));
+        }
+      }
+    }
+  }
+
+  static class ItemEquiper {
+
+    void equip(Player player, EquipmentSlot slot, ItemStack item) {
+      switch (slot) {
+        case HEAD: {
+          player.getInventory().setHelmet(item);
+          break;
+        }
+        case CHEST: {
+          player.getInventory().setChestplate(item);
+          break;
+        }
+        case LEGS: {
+          player.getInventory().setLeggings(item);
+          break;
+        }
+        case FEET:
+        default: {
+          player.getInventory().setBoots(item);
+          break;
         }
       }
     }

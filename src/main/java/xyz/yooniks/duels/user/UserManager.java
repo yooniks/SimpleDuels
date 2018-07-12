@@ -6,8 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.bukkit.entity.Player;
+import xyz.yooniks.duels.manager.BaseManager;
 
-public class UserManager {
+public class UserManager implements BaseManager<UUID, DuelUser> {
 
   private final Map<UUID, DuelUser> usersMap = new HashMap<>();
 
@@ -24,11 +25,13 @@ public class UserManager {
     return user;
   }
 
-  public ImmutableMap<UUID, DuelUser> getUsersMap() {
+  @Override
+  public ImmutableMap<UUID, DuelUser> asImmutableMap() {
     return ImmutableMap.copyOf(this.usersMap);
   }
 
-  public ImmutableList<DuelUser> getUsers() {
+  @Override
+  public ImmutableList<DuelUser> asImmutableList() {
     return ImmutableList.copyOf(this.usersMap.values());
   }
 
